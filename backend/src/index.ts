@@ -51,21 +51,49 @@ const cars: Car[] = [
 ];
 
 // GET /cars
+// Update the GET /cars endpoint
 app.get("/cars", (req, res) => {
-  // optional query params: make, model, minPrice, maxPrice
-  let results = [...cars]; // Shallow copy of cars array
-  const { make, model, minPrice, maxPrice } = req.query;
-  if (make)
-    results = results.filter(
-      (c) => c.make.toLowerCase() === String(make).toLowerCase()
+  const { make, model, minPrice, maxPrice, minYear, maxYear, minMileage, maxMileage } = req.query;
+
+  let filtered = cars;
+
+  if (make) {
+    filtered = filtered.filter((c) =>
+      c.make.toLowerCase().includes((make as string).toLowerCase())
     );
-  if (model)
-    results = results.filter(
-      (c) => c.model.toLowerCase() === String(model).toLowerCase()
+  }
+
+  if (model) {
+    filtered = filtered.filter((c) =>
+      c.model.toLowerCase().includes((model as string).toLowerCase())
     );
-  if (minPrice) results = results.filter((c) => c.price >= Number(minPrice));
-  if (maxPrice) results = results.filter((c) => c.price <= Number(maxPrice));
-  res.json(results);
+  }
+
+  if (minPrice) {
+    filtered = filtered.filter((c) => c.price >= Number(minPrice));
+  }
+
+  if (maxPrice) {
+    filtered = filtered.filter((c) => c.price <= Number(maxPrice));
+  }
+
+  if (minYear) {
+    filtered = filtered.filter((c) => c.year >= Number(minYear));
+  }
+
+  if (maxYear) {
+    filtered = filtered.filter((c) => c.year <= Number(maxYear));
+  }
+
+  if (minMileage) {
+    filtered = filtered.filter((c) => c.mileage >= Number(minMileage));
+  }
+
+  if (maxMileage) {
+    filtered = filtered.filter((c) => c.mileage <= Number(maxMileage));
+  }
+
+  res.json(filtered);
 });
 
 // GET /cars/:id

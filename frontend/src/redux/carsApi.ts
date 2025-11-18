@@ -1,32 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-// Define the Car type
-export type Car = {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  price: number;
-  mileage: number;
-  color?: string;
-  description?: string;
-};
+import { Car, CarFilters } from "@/types";
 
 export const carsApi = createApi({
   reducerPath: "carsApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000" }),
   endpoints: (builder) => ({
-    getCars: builder.query<
-      Car[],
-      {
-        make?: string;
-        model?: string;
-        minPrice?: number;
-        maxPrice?: number;
-      } | void
-    >({
+    getCars: builder.query<Car[], CarFilters | void>({
       query: (params) => {
-        const qs = new URLSearchParams(params as Record<string, string>);
+        if (!params) return "/cars";
+
+        const qs = new URLSearchParams();
+
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            qs.set(key, String(value));
+          }
+        });
         return `/cars${qs.toString() ? `?${qs.toString()}` : ""}`;
       },
     }),
@@ -34,8 +23,8 @@ export const carsApi = createApi({
       query: (id) => `/cars/${id}`,
     }),
     createAppointment: builder.mutation<
-      { success: boolean; appointmentId: string }, // Response type
-      { carId: string; name: string; email: string; date: string } // Argument type
+      { success: boolean; appointmentId: string },
+      { carId: string; name: string; email: string; date: string }
     >({
       query: (body) => ({ url: "/appointments", method: "POST", body }),
     }),

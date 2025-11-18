@@ -1,37 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { useGetCarByIdQuery } from "@/redux/carsApi";
+import { Car } from "@/redux/carsApi";
 
-export default function FavoriteCarItem({
-  id,
-  removeFavorite,
-}: {
-  id: string;
-  removeFavorite: (id: string) => void;
-}) {
-  const { data: car, isLoading, error } = useGetCarByIdQuery(id);
+interface FavoritesCarItemProps {
+  car: Car;
+  onRemove: (id: string) => void;
+}
 
-  if (isLoading) return <p>Loading {id}...</p>;
-  if (error || !car) return <p>Car not found ({id})</p>;
-
+export default function FavoritesCarItem({
+  car,
+  onRemove,
+}: FavoritesCarItemProps) {
   return (
-    <div className="border p-4 rounded flex justify-between">
-      <div>
-        <Link href={`/cars/${car.id}`}>
-          <span className="text-blue-600 font-bold text-lg cursor-pointer">
-            {car.make} {car.model} ({car.year})
-          </span>
-        </Link>
-        <p>${car.price.toLocaleString()}</p>
+    <div className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+      <Link href={`/cars/${car.id}`} className="block mb-3">
+        <h3 className="text-xl font-bold text-blue-600 hover:underline">
+          {car.make} {car.model} ({car.year})
+        </h3>
+      </Link>
+
+      <div className="space-y-2 mb-4">
+        <p className="text-2xl font-semibold text-green-600">
+          ${car.price.toLocaleString()}
+        </p>
+        <p className="text-sm text-gray-600">
+          {car.mileage.toLocaleString()} miles
+        </p>
+        {car.color && (
+          <p className="text-sm text-gray-600">Color: {car.color}</p>
+        )}
+        {car.description && (
+          <p className="text-sm text-gray-700 line-clamp-2">
+            {car.description}
+          </p>
+        )}
       </div>
 
-      <button
-        onClick={() => removeFavorite(car.id)}
-        className="px-3 py-1 bg-red-500 text-white rounded"
-      >
-        Remove
-      </button>
+      <div className="flex gap-2">
+        <Link
+          href={`/cars/${car.id}`}
+          className="flex-1 text-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          View Details
+        </Link>
+        <button
+          onClick={() => onRemove(car.id)}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          aria-label="Remove from favorites"
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 }
