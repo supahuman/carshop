@@ -1,33 +1,55 @@
-// frontend/src/components/CarList.tsx
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import useDebounce from "../hooks/useDebounce";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { useGetCarsQuery, Car } from "../redux/carsApi";
+import { useGetCarsQuery } from "../redux/carsApi";
+import { Car, CarFilters as CarFiltersType } from "@/types";
+import CarFilters from "./CarFilters";
+import { parseFiltersFromURL } from "@/lib/url";
 
 export default function CarList() {
-  const [make, setMake] = React.useState("");
-  const debouncedMake = useDebounce(make, 400);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = React.useState(false);
+
+  // Initialize filters from URL
+  const [filters, setFilters] = React.useState<CarFiltersType>(() =>
+    parseFiltersFromURL(searchParams)
+  );
+
+  // Debounce filters for API calls
+  const debouncedFilters = useDebounce(filters, 400);
 
   // favorites stored as Set of ids persisted to localStorage
   const [favIds, setFavIds] = useLocalStorage<string[]>("favorites", []);
   const favSet = useMemo(() => new Set(favIds), [favIds]);
 
-  React.useEffect(() => {
-    // This effect only runs once on mount to fix hydration mismatch
+  useEffect(() => {
     setMounted(true);
   }, []);
 
-  // RTK Query call uses the debounced value
+  // Sync filters to URL
+  useEffect(() => {
+    const validEntries = Object.entries(filters)
+      .filter(([_, value]) => value !== undefined && value !== "")
+      .map(([key, value]) => [key, String(value)]);
+
+    const params = new URLSearchParams(validEntries);
+    router.push(params.toString() ? `/?${params}` : "/", { scroll: false });
+  }, [filters, router]);
+  // RTK Query call uses the debounced filters
+  const hasFilters = Object.values(debouncedFilters).some(
+    (v) => v !== undefined
+  );
   const {
     data: cars,
     isLoading,
     error,
     refetch,
-  } = useGetCarsQuery(debouncedMake ? { make: debouncedMake } : undefined);
+  } = useGetCarsQuery(hasFilters ? debouncedFilters : undefined);
 
   const toggleFavorite = (id: string) => {
     setFavIds((prev) =>
@@ -35,57 +57,82 @@ export default function CarList() {
     );
   };
 
+  const handleFilterChange = (newFilters: CarFiltersType) => {
+    setFilters(newFilters);
+  };
+
+  const handleResetFilters = () => {
+    setFilters({});
+  };
+
   return (
     <div className="p-4">
-      <h2 className="text-2xl mb-4">Cars</h2>
-
-      <div className="mb-4 flex gap-2 items-center">
-        <input
-          value={make}
-          onChange={(e) => setMake(e.target.value)}
-          placeholder="Filter by make (debounced)"
-          className="border p-2"
-        />
-        <button
-          onClick={() => refetch()}
-          className="bg-blue-500 text-white px-3 py-1 rounded"
-        >
-          Search
-        </button>
-        <div className="ml-auto">
-          <strong>Favorites:</strong> {mounted ? favIds.length : 0}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Cars</h2>
+        <div className="flex gap-4 items-center">
+          <button
+            onClick={() => refetch()}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Refresh
+          </button>
+          <div>
+            <strong>Favorites:</strong> {mounted ? favIds.length : 0}
+          </div>
         </div>
       </div>
 
-      {isLoading && <p>Loading...</p>}
-      {error && <p>Error loading cars.</p>}
+      <CarFilters
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onReset={handleResetFilters}
+      />
 
-      <ul>
+      {isLoading && <p>Loading...</p>}
+      {error && <p className="text-red-600">Error loading cars.</p>}
+
+      {cars && cars.length === 0 && (
+        <p className="text-center text-gray-600 py-8">
+          No cars found matching your filters.
+        </p>
+      )}
+
+      <ul className="space-y-4">
         {cars?.map((c: Car) => {
           const isFav = favSet.has(c.id);
           return (
             <li
               key={c.id}
-              className="mb-2 border-b pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+              className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between hover:shadow-lg transition-shadow"
             >
               <div>
                 <Link
                   href={`/cars/${c.id}`}
-                  className="font-bold text-blue-600"
+                  className="font-bold text-blue-600 hover:underline text-lg"
                 >
                   {c.make} {c.model} ({c.year})
                 </Link>
-                <div className="text-sm text-gray-600">
+                <div className="text-xl font-semibold text-green-600 mt-1">
                   ${c.price.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-500">{c.description}</div>
+                <div className="text-sm text-gray-600 mt-1">
+                  {c.mileage.toLocaleString()} miles
+                  {c.color && ` • ${c.color}`}
+                </div>
+                {c.description && (
+                  <div className="text-sm text-gray-500 mt-2">
+                    {c.description}
+                  </div>
+                )}
               </div>
 
-              <div className="mt-2 sm:mt-0 flex gap-2 items-center">
+              <div className="mt-4 sm:mt-0 flex gap-2 items-center">
                 <button
                   onClick={() => toggleFavorite(c.id)}
-                  className={`px-3 py-1 rounded ${
-                    isFav ? "bg-yellow-400" : "bg-gray-200"
+                  className={`px-4 py-2 rounded transition-colors ${
+                    isFav
+                      ? "bg-yellow-400 hover:bg-yellow-500"
+                      : "bg-gray-200 hover:bg-gray-300"
                   }`}
                   aria-pressed={isFav}
                 >
@@ -94,7 +141,7 @@ export default function CarList() {
 
                 <Link
                   href={`/cars/${c.id}`}
-                  className="px-3 py-1 rounded bg-green-500 text-white"
+                  className="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
                 >
                   View
                 </Link>
