@@ -10,10 +10,16 @@ import { useGetCarsQuery, Car } from "../redux/carsApi";
 export default function CarList() {
   const [make, setMake] = React.useState("");
   const debouncedMake = useDebounce(make, 400);
+  const [mounted, setMounted] = React.useState(false);
 
   // favorites stored as Set of ids persisted to localStorage
   const [favIds, setFavIds] = useLocalStorage<string[]>("favorites", []);
   const favSet = useMemo(() => new Set(favIds), [favIds]);
+
+  React.useEffect(() => {
+    // This effect only runs once on mount to fix hydration mismatch
+    setMounted(true);
+  }, []);
 
   // RTK Query call uses the debounced value
   const {
@@ -47,7 +53,7 @@ export default function CarList() {
           Search
         </button>
         <div className="ml-auto">
-          <strong>Favorites:</strong> {favIds.length}
+          <strong>Favorites:</strong> {mounted ? favIds.length : 0}
         </div>
       </div>
 

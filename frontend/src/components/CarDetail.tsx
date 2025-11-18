@@ -7,7 +7,7 @@ import {
 } from "../redux/carsApi";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-export default function CarDetailClient({ id }: { id: string }) {
+export default function CarDetail({ id }: { id: string }) {
   const { data: car, isLoading, error } = useGetCarByIdQuery(id);
   const [favIds, setFavIds] = useLocalStorage<string[]>("favorites", []);
   const isFav = favIds.includes(id);
