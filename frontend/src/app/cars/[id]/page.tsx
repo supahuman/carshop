@@ -1,5 +1,5 @@
 // app/cars/[id]/page.tsx (server component)
-import CarDetailClient from "../../../components/CarDetailClient";
+import CarDetail from "../../../components/CarDetail";
 
 export default async function CarPage({
   params,
@@ -10,7 +10,7 @@ export default async function CarPage({
   // server fetch for SEO (optional), or you can rely on client component fetch
   return (
     <div className="p-4">
-      <CarDetailClient id={id} />
+      <CarDetail id={id} />
     </div>
   );
 }
