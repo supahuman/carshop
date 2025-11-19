@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Car, CarFilters } from "@/types";
 
-export const carsApi = createApi({
-  reducerPath: "carsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000" }),
+export const carApi = createApi({
+  reducerPath: "carApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000/api" }),
   endpoints: (builder) => ({
     getCars: builder.query<Car[], CarFilters | void>({
       query: (params) => {
@@ -22,17 +22,7 @@ export const carsApi = createApi({
     getCarById: builder.query<Car, string>({
       query: (id) => `/cars/${id}`,
     }),
-    createAppointment: builder.mutation<
-      { success: boolean; appointmentId: string },
-      { carId: string; name: string; email: string; date: string }
-    >({
-      query: (body) => ({ url: "/appointments", method: "POST", body }),
-    }),
   }),
 });
 
-export const {
-  useGetCarsQuery,
-  useGetCarByIdQuery,
-  useCreateAppointmentMutation,
-} = carsApi;
+export const { useGetCarsQuery, useGetCarByIdQuery } = carApi;

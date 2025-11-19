@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import {
-  useGetCarByIdQuery,
-  useCreateAppointmentMutation,
-} from "../redux/carsApi";
+import { useGetCarByIdQuery } from "../redux/carApi";
+import { useCreateAppointmentMutation } from "../redux/appointmentApi";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function CarDetail({ id }: { id: string }) {

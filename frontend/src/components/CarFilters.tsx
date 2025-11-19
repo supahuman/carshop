@@ -14,7 +14,7 @@ export default function CarFilters({
   onFilterChange,
   onReset,
 }: CarFiltersProps) {
-  const handleChange = (key: keyof CarFiltersType, value: string) => {
+  const handleNumChange = (key: keyof CarFiltersType, value: string) => {
     const numValue = value ? Number(value) : undefined;
     onFilterChange({ ...filters, [key]: numValue });
   };
@@ -67,7 +67,7 @@ export default function CarFilters({
             <input
               type="number"
               value={filters.minPrice || ""}
-              onChange={(e) => handleChange("minPrice", e.target.value)}
+              onChange={(e) => handleNumChange("minPrice", e.target.value)}
               placeholder="Min"
               className="w-full border rounded px-3 py-2"
             />
@@ -76,7 +76,7 @@ export default function CarFilters({
             <input
               type="number"
               value={filters.maxPrice || ""}
-              onChange={(e) => handleChange("maxPrice", e.target.value)}
+              onChange={(e) => handleNumChange("maxPrice", e.target.value)}
               placeholder="Max"
               className="w-full border rounded px-3 py-2"
             />
@@ -92,7 +92,7 @@ export default function CarFilters({
             <input
               type="number"
               value={filters.minYear || ""}
-              onChange={(e) => handleChange("minYear", e.target.value)}
+              onChange={(e) => handleNumChange("minYear", e.target.value)}
               placeholder="Min Year"
               className="w-full border rounded px-3 py-2"
             />
@@ -101,7 +101,7 @@ export default function CarFilters({
             <input
               type="number"
               value={filters.maxYear || ""}
-              onChange={(e) => handleChange("maxYear", e.target.value)}
+              onChange={(e) => handleNumChange("maxYear", e.target.value)}
               placeholder="Max Year"
               className="w-full border rounded px-3 py-2"
             />
@@ -117,7 +117,7 @@ export default function CarFilters({
             <input
               type="number"
               value={filters.minMileage || ""}
-              onChange={(e) => handleChange("minMileage", e.target.value)}
+              onChange={(e) => handleNumChange("minMileage", e.target.value)}
               placeholder="Min Miles"
               className="w-full border rounded px-3 py-2"
             />
@@ -126,7 +126,7 @@ export default function CarFilters({
             <input
               type="number"
               value={filters.maxMileage || ""}
-              onChange={(e) => handleChange("maxMileage", e.target.value)}
+              onChange={(e) => handleNumChange("maxMileage", e.target.value)}
               placeholder="Max Miles"
               className="w-full border rounded px-3 py-2"
             />

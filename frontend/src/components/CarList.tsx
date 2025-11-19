@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import useDebounce from "../hooks/useDebounce";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { useGetCarsQuery } from "../redux/carsApi";
+import { useGetCarsQuery } from "../redux/carApi";
 import { Car, CarFilters as CarFiltersType } from "@/types";
 import CarFilters from "./CarFilters";
 import { parseFiltersFromURL } from "@/lib/url";
@@ -13,7 +13,6 @@ import { parseFiltersFromURL } from "@/lib/url";
 export default function CarList() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [mounted, setMounted] = React.useState(false);
 
   // Initialize filters from URL
   const [filters, setFilters] = React.useState<CarFiltersType>(() =>
@@ -26,10 +25,6 @@ export default function CarList() {
   // favorites stored as Set of ids persisted to localStorage
   const [favIds, setFavIds] = useLocalStorage<string[]>("favorites", []);
   const favSet = useMemo(() => new Set(favIds), [favIds]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Sync filters to URL
   useEffect(() => {
@@ -76,9 +71,6 @@ export default function CarList() {
           >
             Refresh
           </button>
-          <div>
-            <strong>Favorites:</strong> {mounted ? favIds.length : 0}
-          </div>
         </div>
       </div>
 

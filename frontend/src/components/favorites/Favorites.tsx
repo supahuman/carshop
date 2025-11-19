@@ -1,21 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { useGetCarsQuery } from "@/redux/carsApi";
+import { useGetCarsQuery } from "@/redux/carApi";
 import FavoritesCarItem from "./FavoritesCarItem";
 import Link from "next/link";
 
 export default function FavoritesClient() {
   const [favIds, setFavIds] = useLocalStorage<string[]>("favorites", []);
-  const [mounted, setMounted] = useState(false);
 
   // Fetch all cars to filter favorites
   const { data: allCars, isLoading } = useGetCarsQuery();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const removeFavorite = (id: string) => {
     setFavIds((prev) => prev.filter((favId) => favId !== id));
@@ -26,10 +20,6 @@ export default function FavoritesClient() {
       setFavIds([]);
     }
   };
-
-  if (!mounted) {
-    return <p>Loading favorites...</p>;
-  }
 
   if (favIds.length === 0) {
     return (

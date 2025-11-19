@@ -20,6 +20,9 @@ export default function RootLayout({
           <Link href="/favorites" className="hover:underline">
             Favorites
           </Link>
+          <Link href="/appointments" className="hover:underline">
+            Appointments
+          </Link>
         </nav>
         <ReduxProvider>{children}</ReduxProvider>
       </body>
