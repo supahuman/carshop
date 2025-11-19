@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Car } from "@/redux/carsApi";
+import { Car } from "@/types";
 
 interface FavoritesCarItemProps {
   car: Car;
