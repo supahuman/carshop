@@ -1,3 +1,2 @@
-// src/types/index.ts
 export * from "./car";
 export * from "./appointment";
