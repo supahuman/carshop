@@ -5,7 +5,7 @@ import { useGetCarsQuery } from "@/redux/carApi";
 import FavoritesCarItem from "./FavoritesCarItem";
 import Link from "next/link";
 
-export default function FavoritesClient() {
+export default function Favorites() {
   const [favIds, setFavIds] = useLocalStorage<string[]>("favorites", []);
 
   // Fetch all cars to filter favorites
