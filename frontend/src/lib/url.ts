@@ -16,7 +16,7 @@ const numericFields = [
 export const parseFiltersFromURL = (
   searchParams: URLSearchParams
 ): CarFilters => {
-  const filters: CarFilters = {};
+  const filters: Record<string, string | number> = {};
 
   stringFields.forEach((key) => {
     const value = searchParams.get(key);
@@ -28,5 +28,5 @@ export const parseFiltersFromURL = (
     if (value) filters[key] = Number(value);
   });
 
-  return filters;
+  return filters as CarFilters;
 };
