@@ -16,41 +16,29 @@ export const getCars = async (req: Request, res: Response) => {
 
   let filtered = cars;
 
-  if (make) {
+  if (make)
     filtered = filtered.filter((c) =>
       c.make.toLowerCase().includes((make as string).toLowerCase())
     );
-  }
 
-  if (model) {
+  if (model)
     filtered = filtered.filter((c) =>
       c.model.toLowerCase().includes((model as string).toLowerCase())
     );
-  }
 
-  if (minPrice) {
-    filtered = filtered.filter((c) => c.price >= Number(minPrice));
-  }
+  if (minPrice) filtered = filtered.filter((c) => c.price >= Number(minPrice));
 
-  if (maxPrice) {
-    filtered = filtered.filter((c) => c.price <= Number(maxPrice));
-  }
+  if (maxPrice) filtered = filtered.filter((c) => c.price <= Number(maxPrice));
 
-  if (minYear) {
-    filtered = filtered.filter((c) => c.year >= Number(minYear));
-  }
+  if (minYear) filtered = filtered.filter((c) => c.year >= Number(minYear));
 
-  if (maxYear) {
-    filtered = filtered.filter((c) => c.year <= Number(maxYear));
-  }
+  if (maxYear) filtered = filtered.filter((c) => c.year <= Number(maxYear));
 
-  if (minMileage) {
+  if (minMileage)
     filtered = filtered.filter((c) => c.mileage >= Number(minMileage));
-  }
 
-  if (maxMileage) {
+  if (maxMileage)
     filtered = filtered.filter((c) => c.mileage <= Number(maxMileage));
-  }
 
   res.json(filtered);
 };

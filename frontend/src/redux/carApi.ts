@@ -7,16 +7,18 @@ export const carApi = createApi({
   endpoints: (builder) => ({
     getCars: builder.query<Car[], CarFilters | void>({
       query: (params) => {
+        // Return all cars if no filters are provided
         if (!params) return "/cars";
 
-        const qs = new URLSearchParams();
-
-        Object.entries(params).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            qs.set(key, String(value));
-          }
-        });
-        return `/cars${qs.toString() ? `?${qs.toString()}` : ""}`;
+        // Functional programming way
+        const queryString = new URLSearchParams(
+          Object.entries(params)
+            .filter(([_, value]) => value !== undefined && value !== null)
+            .map(([key, value]) => [key, String(value)])
+        );
+        return `/cars${
+          queryString.toString() ? `?${queryString.toString()}` : ""
+        }`;
       },
     }),
     getCarById: builder.query<Car, string>({
