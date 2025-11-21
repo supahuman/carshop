@@ -11,7 +11,7 @@ import Link from "next/link";
 export default function AppointmentList() {
   const { data: appointments, isLoading, refetch } = useGetAppointmentsQuery();
 
-  const { data: cars } = useGetCarsQuery();
+  const { data: carsResponse } = useGetCarsQuery();
 
   const [deleteAppointment, { isLoading: isDeleting }] =
     useDeleteAppointmentMutation();
@@ -22,7 +22,7 @@ export default function AppointmentList() {
       await deleteAppointment(id).unwrap();
       refetch();
       alert("Appointment canceled");
-    } catch (err) {
+    } catch {
       alert("Error canceling appointment");
     }
   };
@@ -36,7 +36,7 @@ export default function AppointmentList() {
   return (
     <div className="space-y-4">
       {appointments.map((a) => {
-        const car = cars?.find((c) => c.id === a.carId);
+        const car = carsResponse?.cars?.find((c) => c.id === a.carId);
         return (
           <div key={a.id} className="border p-4 rounded flex justify-between">
             <div>

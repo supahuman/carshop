@@ -18,4 +18,13 @@ export type CarFilters = {
   maxYear?: number;
   minMileage?: number;
   maxMileage?: number;
+  sortBy?: "price" | "year" | "mileage";
+  order?: "asc" | "desc";
+  page?: number;
+  limit?: number;
+};
+
+export type CarsResponse = {
+  cars: Car[];
+  total: number;
 };

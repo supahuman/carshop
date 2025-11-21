@@ -1,1 +1,88 @@
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Base / design tokens */
+:root {
+  --rounded-lg: 1rem;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* use explicit values instead of @apply to avoid PostCSS/Tailwind layer ordering issues */
+  background-color: #f9fafb; /* tailwind gray-50 */
+  color: #111827; /* tailwind text-gray-900 */
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Improved focus rings for accessibility */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.2); /* a11y friendly focus */
+  outline-offset: 2px;
+}
+
+/* Inputs & buttons - consistent look */
+/* removed @apply usage for body & form controls (replaced with explicit CSS below) */
+input,
+textarea,
+select,
+button {
+  border-radius: var(--rounded-lg);
+  border: 1px solid rgba(229, 231, 235, 1); /* tailwind gray-200 */
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08); /* subtle focus */
+  border-color: transparent;
+  outline: none;
+}
+
+/* Utility to create a subtle card background */
+.card-bg {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.6)
+  );
+  backdrop-filter: blur(6px);
+}
+
+/* Typographic defaults */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  letter-spacing: -0.02em;
+}
+
+/* Reduce motion for users who request it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

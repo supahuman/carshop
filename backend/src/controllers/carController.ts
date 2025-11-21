@@ -12,6 +12,10 @@ export const getCars = async (req: Request, res: Response) => {
     maxYear,
     minMileage,
     maxMileage,
+    sortBy,
+    order,
+    page,
+    limit,
   } = req.query;
 
   let filtered = cars;
@@ -40,7 +44,25 @@ export const getCars = async (req: Request, res: Response) => {
   if (maxMileage)
     filtered = filtered.filter((c) => c.mileage <= Number(maxMileage));
 
-  res.json(filtered);
+  // Sorting
+  if (sortBy) {
+    const sortKey = sortBy as "price" | "year" | "mileage";
+    const sortOrder = order === "desc" ? -1 : 1;
+    filtered = filtered.sort((a, b) => {
+      if (a[sortKey] < b[sortKey]) return -1 * sortOrder;
+      if (a[sortKey] > b[sortKey]) return 1 * sortOrder;
+      return 0;
+    });
+  }
+
+  // Pagination
+  const total = filtered.length;
+  const pageNum = Number(page) || 1;
+  const limitNum = Number(limit) || 10;
+  const offset = (pageNum - 1) * limitNum;
+  const paginated = filtered.slice(offset, offset + limitNum);
+
+  res.json({ cars: paginated, total });
 };
 
 // GET /cars/:id

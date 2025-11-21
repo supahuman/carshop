@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Car, CarFilters } from "@/types";
+import { Car, CarFilters, CarsResponse } from "@/types";
 
 export const carApi = createApi({
   reducerPath: "carApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000/api" }),
   endpoints: (builder) => ({
-    getCars: builder.query<Car[], CarFilters | void>({
+    getCars: builder.query<CarsResponse, CarFilters | void>({
       query: (params) => {
         // Return all cars if no filters are provided
         if (!params) return "/cars";

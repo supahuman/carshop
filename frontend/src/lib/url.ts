@@ -1,7 +1,7 @@
 // src/lib/url.ts
 import { CarFilters } from "@/types";
 
-const stringFields = ["make", "model"] as const;
+const stringFields = ["make", "model", "sortBy", "order"] as const;
 const numericFields = [
   "minPrice",
   "maxPrice",
@@ -9,6 +9,8 @@ const numericFields = [
   "maxYear",
   "minMileage",
   "maxMileage",
+  "page",
+  "limit",
 ] as const;
 
 export const parseFiltersFromURL = (
